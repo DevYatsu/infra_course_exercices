@@ -1,0 +1,46 @@
+
+services:
+  exo1.1:
+    image: henriquemarquesreis/app_cours_docker
+    ports:
+     - "1100:8080"
+  exo1.2:
+    image: nginx
+    ports:
+      - "1200:80"
+  exo1.3:
+    image: mysql
+    ports:
+      - "1300:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: passwd
+      MYSQL_DATABASE: db 
+      MYSQL_USER:  Yanis
+      MYSQL_PASSWORD: test
+    container_name: mydb
+  mysql-client:
+    image: mysql
+    depends_on:
+      - exo1.3
+    command: ["mysql", "-hmydb", "-uYanis", "-ptest", "db"]
+    tty: true
+  exo1.4:
+    image: python
+    volumes:
+      - .:/mnt/python_mount
+    working_dir: /mnt/python_mount
+  exo1.5:
+    image: phpmyadmin
+    ports:
+      - "1500:80"
+    depends_on:
+      - exo1.3
+    links:
+      - exo1.3:db
+  exo2.1:
+    image: devyatsuu/example_static_nginx
+    ports:
+      - "2100:80"
+  exo2.2:
+    image: devyatsuu/example_fib_2000
+
